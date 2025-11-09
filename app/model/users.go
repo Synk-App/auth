@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -15,6 +16,13 @@ type UsersList struct {
 	UserId    int    `json:"user_id"`
 	UserName  string `json:"user_name"`
 	UserEmail string `json:"user_email"`
+	CreatedAt string `json:"created_at"`
+}
+
+type UserRegisterData struct {
+	UserName  string `json:"user_name"`
+	UserEmail string `json:"user_email"`
+	UserPass  string `json:"user_pass"`
 	CreatedAt string `json:"created_at"`
 }
 
@@ -79,4 +87,68 @@ func (u *Users) List(id string) ([]UsersList, error) {
 	}
 
 	return users, nil
+}
+
+func (u *Users) ByEmail(email string) (UsersList, error) {
+	var user UsersList
+
+	rows, rowsErr := u.db.Query(
+		`SELECT user.user_id, user.user_name, user.user_email, user.created_at
+        FROM user
+        WHERE user.deleted_at IS NULL AND user_email = ?`, email,
+	)
+
+	if rowsErr != nil {
+		return user, fmt.Errorf("models.users.by_email: %s", rowsErr.Error())
+	}
+
+	defer rows.Close()
+
+	rowsErr = rows.Err()
+
+	if rowsErr != nil {
+		return user, fmt.Errorf("models.users.by_email: %s", rowsErr.Error())
+	}
+
+	for rows.Next() {
+		exception := rows.Scan(
+			&user.UserId,
+			&user.UserName,
+			&user.UserEmail,
+			&user.CreatedAt,
+		)
+
+		user.CreatedAt = util.ToTimeBR(user.CreatedAt)
+
+		if exception != nil {
+			return user, fmt.Errorf("models.users.by_email: %s", exception.Error())
+		}
+	}
+
+	return user, nil
+}
+
+func (u *Users) Add(user UserRegisterData) (int, error) {
+	var userId int
+
+	insertRes, insertErr := u.db.ExecContext(
+		context.Background(),
+		`INSERT INTO synk.user (user_name, user_email, user_pass)
+        VALUES (?, ?, ?)`,
+		user.UserName, user.UserEmail, user.UserPass,
+	)
+
+	if insertErr != nil {
+		return userId, fmt.Errorf("models.users.add: %s", insertErr.Error())
+	}
+
+	id, exception := insertRes.LastInsertId()
+
+	if exception != nil {
+		return userId, fmt.Errorf("models.users.add: %s", exception.Error())
+	}
+
+	userId = int(id)
+
+	return userId, nil
 }
