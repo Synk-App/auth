@@ -161,3 +161,43 @@ func (u *Users) Add(user UserRegisterData) (int, error) {
 
 	return userId, nil
 }
+
+func (u *Users) ById(id int) (UserInfo, error) {
+	var user UserInfo
+
+	rows, rowsErr := u.db.Query(
+		`SELECT user.user_id, user.user_name, user.user_email, user.user_pass, user.created_at
+        FROM user
+        WHERE user.deleted_at IS NULL AND user_id = ?`, id,
+	)
+
+	if rowsErr != nil {
+		return user, fmt.Errorf("models.users.by_id: %s", rowsErr.Error())
+	}
+
+	defer rows.Close()
+
+	rowsErr = rows.Err()
+
+	if rowsErr != nil {
+		return user, fmt.Errorf("models.users.by_id: %s", rowsErr.Error())
+	}
+
+	for rows.Next() {
+		exception := rows.Scan(
+			&user.UserId,
+			&user.UserName,
+			&user.UserEmail,
+			&user.UserPass,
+			&user.CreatedAt,
+		)
+
+		user.CreatedAt = util.ToTimeBR(user.CreatedAt)
+
+		if exception != nil {
+			return user, fmt.Errorf("models.users.by_id: %s", exception.Error())
+		}
+	}
+
+	return user, nil
+}

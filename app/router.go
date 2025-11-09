@@ -15,6 +15,7 @@ func Router(service *Service) {
 	http.HandleFunc("GET /users", userController.HandleShow)
 	http.HandleFunc("POST /users/register", userController.HandleRegister)
 	http.HandleFunc("POST /users/login", userController.HandleLogin)
+	http.HandleFunc("GET /users/refresh", userController.HandleRefresh)
 
 	util.Log("app running on port 8080 to " + os.Getenv("PORT"))
 
