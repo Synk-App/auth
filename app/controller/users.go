@@ -3,6 +3,7 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -435,6 +436,151 @@ func (u *Users) HandleLogin(w http.ResponseWriter, r *http.Request) {
 			UserId int `json:"user_id"`
 		}{
 			UserId: userInfo.UserId,
+		},
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(REFRESH_TOKEN_EXPIRY)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+
+	refreshTokenString, refreshTokenStringErr := refreshToken.SignedString(jwtRefreshSecret)
+	if refreshTokenStringErr != nil {
+		response.Resource.Ok = false
+		response.Resource.Error = "error while signing user refresh token"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+
+	cookie := http.Cookie{
+		Name:     "refresh_token",
+		Value:    refreshTokenString,
+		MaxAge:   int(REFRESH_TOKEN_EXPIRY.Seconds()),
+		Path:     "/",
+		Domain:   "",
+		HttpOnly: true,
+		Secure:   false, // Set to true in production (requires HTTPS)
+	}
+
+	response.Data.UserId = userInfo.UserId
+	response.Data.UserName = userInfo.UserName
+	response.Data.UserEmail = userInfo.UserEmail
+	response.Data.Token = accessTokenString
+
+	http.SetCookie(w, &cookie)
+	WriteSuccessResponse(w, response)
+}
+
+func (u *Users) HandleRefresh(w http.ResponseWriter, r *http.Request) {
+	SetJsonContentType(w)
+
+	response := HandleUserLoginResponse{
+		Resource: ResponseHeader{
+			Ok: true,
+		},
+		Data: UserLoginDataResponse{},
+	}
+
+	refreshTokenCookie, refreshTokenCookieErr := r.Cookie("refresh_token")
+
+	if refreshTokenCookieErr != nil {
+		response.Resource.Ok = false
+		response.Resource.Error = "refresh_token cookie is required"
+
+		if refreshTokenCookieErr == http.ErrNoCookie {
+			response.Resource.Error = "no refresh_token found into cookies"
+		}
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+
+	tokenString := refreshTokenCookie.Value
+
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		response.Resource.Ok = false
+		response.Resource.Error = "JWT secret is not set"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+	jwtSecret := []byte(secret)
+
+	refreshSecret := os.Getenv("JWT_REFRESH_SECRET")
+	if refreshSecret == "" {
+		response.Resource.Ok = false
+		response.Resource.Error = "JWT refresh secret is not set"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+	jwtRefreshSecret := []byte(refreshSecret)
+
+	claims := &RefreshTokenClaims{}
+	token, tokenErr := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+
+		return jwtRefreshSecret, nil
+	})
+
+	if tokenErr != nil || !token.Valid {
+		response.Resource.Ok = false
+		response.Resource.Error = "refresh token is not valid"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+
+	userInfo, userInfoErr := u.model.ById(claims.User.UserId)
+
+	if userInfo.UserId == 0 || userInfoErr != nil {
+		response.Resource.Ok = false
+		response.Resource.Error = "user not exists with user_id within refresh_token"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+
+	accessClaims := AccessTokenClaims{
+		User: struct {
+			UserId int `json:"user_id"`
+		}{
+			UserId: claims.User.UserId,
+		},
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ACCESS_TOKEN_EXPIRY)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
+
+	accessTokenString, tokenStringErr := accessToken.SignedString(jwtSecret)
+	if tokenStringErr != nil {
+		response.Resource.Ok = false
+		response.Resource.Error = "error while signing user access token"
+
+		WriteErrorResponse(w, response, "/users", response.Resource.Error, http.StatusBadRequest)
+
+		return
+	}
+
+	refreshClaims := RefreshTokenClaims{
+		User: struct {
+			UserId int `json:"user_id"`
+		}{
+			UserId: claims.User.UserId,
 		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(REFRESH_TOKEN_EXPIRY)),
