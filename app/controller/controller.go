@@ -3,6 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"strings"
 	"synk/gateway/app/util"
 )
 
@@ -40,7 +42,19 @@ func SetJsonContentType(w http.ResponseWriter) {
 
 func Cors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		var allowedOriginsMap = map[string]struct{}{
+			strings.TrimSuffix(os.Getenv("WEB_ENDPOINT"), "/"):     {},
+			strings.TrimSuffix(os.Getenv("GATEWAY_ENDPOINT"), "/"): {},
+		}
+
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		origin := r.Header.Get("Origin")
+		if _, ok := allowedOriginsMap[origin]; ok {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Vary", "Origin")
+		}
+
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 

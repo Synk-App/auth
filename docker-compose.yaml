@@ -6,5 +6,6 @@ services:
       - ${PORT}:8080
     volumes:
       - ./:/app
+      - ./.cert:/cert
     command: go run .
     env_file: .env
