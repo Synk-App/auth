@@ -301,7 +301,8 @@ func (u *Users) HandleRegister(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Domain:   "",
 		HttpOnly: true,
-		Secure:   false, // Set to true in production (requires HTTPS)
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	response.Data.UserId = newUserId
@@ -466,7 +467,8 @@ func (u *Users) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Domain:   "",
 		HttpOnly: true,
-		Secure:   false, // Set to true in production (requires HTTPS)
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	response.Data.UserId = userInfo.UserId
@@ -611,7 +613,8 @@ func (u *Users) HandleRefresh(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Domain:   "",
 		HttpOnly: true,
-		Secure:   false, // Set to true in production (requires HTTPS)
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	response.Data.UserId = userInfo.UserId
@@ -726,7 +729,8 @@ func (u *Users) HandleLogout(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Domain:   "",
 		HttpOnly: true,
-		Secure:   false, // Set to true in production (requires HTTPS)
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	http.SetCookie(w, &cookie)
