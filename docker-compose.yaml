@@ -9,3 +9,10 @@ services:
       - ./.cert:/cert
     command: go run .
     env_file: .env
+
+    networks:
+      - synk_network
+
+networks:
+  synk_network:
+    external: true
