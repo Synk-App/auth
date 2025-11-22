@@ -3,7 +3,7 @@ services:
     container_name: synk_auth
     build: .
     ports:
-      - ${PORT}:8080
+      - ${PORT}:${PORT}
     volumes:
       - ./:/app
       - ./.cert:/cert
