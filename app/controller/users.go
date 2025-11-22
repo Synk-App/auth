@@ -39,7 +39,16 @@ type HandleUserLoginResponse struct {
 	Data     UserLoginDataResponse `json:"user"`
 }
 
+type UserCheckDataResponse struct {
+	UserId int `json:"user_id"`
+}
+
 type HandleUserCheckResponse struct {
+	Resource ResponseHeader        `json:"resource"`
+	Data     UserCheckDataResponse `json:"user"`
+}
+
+type HandleUserLogoutResponse struct {
 	Resource ResponseHeader `json:"resource"`
 }
 
@@ -627,12 +636,15 @@ func (u *Users) HandleRefresh(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) HandleCheck(w http.ResponseWriter, r *http.Request) {
+	var userResponse UserCheckDataResponse
+
 	authHeader := r.Header.Get("Authorization")
 
 	response := HandleUserCheckResponse{
 		Resource: ResponseHeader{
 			Ok: true,
 		},
+		Data: userResponse,
 	}
 
 	if authHeader == "" {
@@ -710,13 +722,15 @@ func (u *Users) HandleCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response.Data.UserId = userInfo.UserId
+
 	WriteSuccessResponse(w, response)
 }
 
 func (u *Users) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	SetJsonContentType(w)
 
-	response := HandleUserCheckResponse{
+	response := HandleUserLogoutResponse{
 		Resource: ResponseHeader{
 			Ok: true,
 		},
