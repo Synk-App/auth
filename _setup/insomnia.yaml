@@ -1,42 +1,43 @@
 type: collection.insomnia.rest/5.0
+schema_version: "5.1"
 name: Synk
 meta:
-  id: wrk_17322b952bb24e84b4c93de25186bd21
-  created: 1758844512926
-  modified: 1758844512926
+  id: wrk_2c4add3bbd764e5ea435ec3f1eae2d21
+  created: 1763832223733
+  modified: 1763832223733
   description: ""
 collection:
   - name: posts
     meta:
-      id: fld_b7de9c95160645fcae32d24f28cc6296
+      id: fld_94179b73ff8348a196f1f6256e7511ba
       created: 1758844562640
       modified: 1758844562640
       sortKey: -1758844562640
       description: ""
   - name: templates
     meta:
-      id: fld_783dea9419484384816e8fb19830b2f0
+      id: fld_716cafb4ee744c5fb495838282eedb51
       created: 1760051795472
       modified: 1760051795472
       sortKey: -1744550419801
       description: ""
   - name: integration_profiles
     meta:
-      id: fld_a1a9bcfe1a9e47af8d0e2a9aa8aa1e2a
+      id: fld_7dc24bc56a754762b10162888ba4886f
       created: 1760137048704
       modified: 1760137048704
       sortKey: -1737403348381.5
       description: ""
   - name: integration_credentials
     meta:
-      id: fld_05dd95472403410aa251967192aee429
+      id: fld_77dc85e8c74245a2b6098f42e7c246ed
       created: 1761507118347
-      modified: 1761507120727
+      modified: 1763832250212
       sortKey: -1733829812671.75
       description: ""
   - name: auth
     meta:
-      id: fld_ed98952020a1455bbaea26206185ca53
+      id: fld_b3023cd677734463992d027041233f05
       created: 1762646232048
       modified: 1762646675914
       sortKey: -1762646232048
@@ -45,7 +46,7 @@ collection:
       - url: "{{auth_url}}/about"
         name: about
         meta:
-          id: req_1ad89fe1ce5a4909b9e78be1839c88fe
+          id: req_a9c8a5be04b0421aa40f0b8f56e63401
           created: 1762646508560
           modified: 1762646527453
           isPrivate: false
@@ -65,7 +66,7 @@ collection:
           rebuildPath: true
       - name: users
         meta:
-          id: fld_23805e95e5f640608a3394845a9186db
+          id: fld_5eeb54ff3b864ce7af6f3c2518ff2dfe
           created: 1762648242203
           modified: 1762648242203
           sortKey: -1762648242203
@@ -74,7 +75,7 @@ collection:
           - url: "{{auth_url}}/users"
             name: show
             meta:
-              id: req_920f078363eb4d09931e03ac8b5ae03e
+              id: req_62dfc63b996a41bda7eaebb5fcfc2eb3
               created: 1762648247052
               modified: 1762648537254
               isPrivate: false
@@ -82,8 +83,7 @@ collection:
               sortKey: -1762648247052
             method: GET
             parameters:
-              - id: pair_261ef9419a864767ba874249e28d9bb8
-                name: user_id
+              - name: user_id
                 value: "1"
                 description: ""
                 disabled: false
@@ -101,7 +101,7 @@ collection:
           - url: "{{auth_url}}/users/register"
             name: register
             meta:
-              id: req_a8e0ecaf5e814e5cba92a03ccb541587
+              id: req_7a6a310d7350445fa6c6c58da2da8cec
               created: 1762728250426
               modified: 1762729716126
               isPrivate: false
@@ -132,9 +132,9 @@ collection:
           - url: "{{auth_url}}/users/login"
             name: login
             meta:
-              id: req_a659dca0e76449bfa585e3c00dda578d
+              id: req_0d1aa85607bd4ae0bcc214f6aae024bc
               created: 1762729728032
-              modified: 1762729746140
+              modified: 1763832293725
               isPrivate: false
               description: ""
               sortKey: -1762688248739
@@ -143,8 +143,8 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"user_email": "usuario2@usuario.com",
-                	"user_pass": "Usuario2"
+                	"user_email": "show@show.com",
+                	"user_pass": "show"
                 }
             headers:
               - name: Content-Type
@@ -162,7 +162,7 @@ collection:
           - url: "{{auth_url}}/users/refresh"
             name: refresh
             meta:
-              id: req_3be246fb58e0490bb2994dd67906046b
+              id: req_ed22a955873541b7a7be1cb75c3d57aa
               created: 1762730969882
               modified: 1762730990500
               isPrivate: false
@@ -183,9 +183,9 @@ collection:
           - url: "{{auth_url}}/users/check"
             name: check
             meta:
-              id: req_c67b320dd2c34c3890f141cea1fd9b22
+              id: req_e145c4dfe32547fab5dd6435047a2b56
               created: 1762899117680
-              modified: 1762899700675
+              modified: 1763832309081
               isPrivate: false
               description: ""
               sortKey: -1762658247473.75
@@ -193,10 +193,9 @@ collection:
             headers:
               - name: User-Agent
                 value: insomnia/12.0.0
-                id: pair_e42c70adb51c41ad81a992a2765816c6
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjR9LCJleHAiOjE3NjI5MDA1OTEsImlhdCI6MTc2Mjg5OTY5MX0.Uuft3FMvFH_CinK9YSwa-ofa-ZxA159Q-XeP6LukYxE
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjZ9LCJleHAiOjE3NjM4MzMxOTUsImlhdCI6MTc2MzgzMjI5NX0.Q96cqGLsTdmbIEwCgD9il3uMpwYW80yH96iYRk1LN40
             settings:
               renderRequestBody: true
               encodeUrl: true
@@ -208,27 +207,25 @@ collection:
 cookieJar:
   name: Default Jar
   meta:
-    id: jar_d382f5fd896d4cafe9c9a8b639043d99a4bdf9cf
+    id: jar_bd80cf4bb0644c9dbd4c5c3125ba50fa
     created: 1758844512931
-    modified: 1762899691851
+    modified: 1763832295155
   cookies:
-    - key: refresh_token
-      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjR9LCJleHAiOjE3NjM1MDQ0OTEsImlhdCI6MTc2Mjg5OTY5MX0.LojkAa5fSXHrkisxyv3xYBx6b9BuKCHns3_HCCL99j8
-      maxAge: 604800
+    - id: eaccac49-66e6-46e9-ae2f-1780dfba710b
+      key: refresh_token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjZ9LCJleHAiOjE3NjQ0MzcwOTUsImlhdCI6MTc2MzgzMjI5NX0.cg5jC6f5kuwQFtzV_o25b8JJlgkrdNjzbbV2mCNXcFc
       domain: localhost
       path: /
+      secure: true
       httpOnly: true
       hostOnly: true
-      creation: 2025-11-09T23:29:56.585Z
-      lastAccessed: 2025-11-11T22:21:31.851Z
-      id: 53298eb9-337a-400b-82d9-27713e0300b2
 environments:
   name: Base Environment
   meta:
-    id: env_d382f5fd896d4cafe9c9a8b639043d99a4bdf9cf
+    id: env_b67a08e918c34d19871a6de45575fc07
     created: 1758844512928
-    modified: 1762646183942
+    modified: 1763832270633
     isPrivate: false
   data:
-    base_url: http://localhost:8082
-    auth_url: http://localhost:8083
+    base_url: https://localhost:8082
+    auth_url: https://localhost:8083

@@ -180,6 +180,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiI...
 	"resource": {
 		"ok": true,
 		"error": ""
+	},
+	"user": {
+		"user_id": 6
 	}
 }
 ```
