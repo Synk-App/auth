@@ -3,9 +3,7 @@ Service to manage sessions and authentication from system.
 
 # Getting Started
 
-First step to run project, is to run docker command to build database. This database will need config from SQL file from `_setup` folder. This folder can be found in [project Gateway](https://github.com/Synk-App/gateway). Within README from that project also has more instructions about database setup will help.
-
-So next step is to create a `.env` file in project root and change example values to your config. You can use `example.env` file from `_setup` folder as template.
+First step is to create a `.env` file in project root and change example values to your config. You can use `example.env` file from `_setup` folder as template.
 
 And then, run `docker compose up -d` into project root to start project.
 
